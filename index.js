@@ -64,7 +64,7 @@ app.use('/userList',async(req,res) => {
     res.render('userTable.ejs',{users:users,avg:avg})
 })
 
-app.listen(process.env.PORT,() => {
+app.listen(process.env.PORT || 4000,() => {
     console.log(process.env.MONGO_URL);
     console.log("Application running at : ",process.env.PORT);
 });
