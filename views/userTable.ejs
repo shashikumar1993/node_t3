@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>Page Title</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link rel='stylesheet' type='text/css' media='screen' href='main.css'>
+    <script src='main.js'></script>
+</head>
+<body style="background-color:#e7e95f;">
+    <table border ="1" style="font-weight:bold;color:black;">
+        <thead>
+            <tr>
+                <th>Photo</th>
+                <th>Name</th>
+                <th>Gender</th>
+                <th>Age</th>
+            </tr>
+        </thead>
+        <tbody>
+            
+            <% for(const user of users) { %>
+                <tr>
+                    <td><img src="<%=user.picture.large%>" /></td>
+                    <td><%=user.name.first%></td>
+                    <td><%=user.gender%></td>
+                    <td><%=user.dob.age%></td>
+                </tr>
+            <% } %>
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="2"></td>
+                <td>Avg Age</td>
+                <td><%=avg%></td>
+            </tr>
+        </tfoot>
+    </table>
+</body>
+</html>
