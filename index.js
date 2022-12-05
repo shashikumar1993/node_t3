@@ -5,8 +5,12 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 const axios = require('axios').default;
+
+const logger = require('./httpLogger');
 const app = express();
 
+//app.use(require('morgan')('common'))
+app.use(logger);
 
 app.get('/',(req,res) => {
     //console.log("Hello Express");

@@ -7,7 +7,7 @@ const findById = async (req,res) => {
 }
 
 const find = async (req,res) => {
-    const products = await (await productService.getProductList())
+    const products = await (await productService.getProductList(req,res))
     res.json({status:'success',data:products})
 }
 
@@ -18,4 +18,7 @@ const save = async (req,res) => {
     res.json({status:'success',data:{product:updateProduct}});
 }
 
-module.exports = { findById, find, save };
+const deleteProduct  = async (req,res) => {
+    const deleteProduct = await productService.deleteProduct(req.query.id)
+}
+module.exports = { findById, find, save, deleteProduct };
