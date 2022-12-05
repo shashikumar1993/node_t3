@@ -9,6 +9,10 @@ const axios = require('axios').default;
 const logger = require('./httpLogger');
 const app = express();
 
+const multer= require('multer');
+
+let upload= multer({dest:'uploads/'});
+
 //app.use(require('morgan')('common'))
 app.use(logger);
 
@@ -72,6 +76,14 @@ app.listen(process.env.PORT || 4000,() => {
     console.log(process.env.MONGO_URL);
     console.log("Application running at : ",process.env.PORT);
 });
+
+app.post('/uploadImage',upload.single('file'),async (req,res) => {
+    res.json({'status':200,'msg':'File upload successfully'})
+})
+
+app.get('/downloadImage',async (req,res) => {
+    res.sendFile(req.query.filename,{root:'uploads/'});
+})
 
 app.use(express.json());
 app.use(require('./routes/index'))

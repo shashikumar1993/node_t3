@@ -21,4 +21,13 @@ const save = async (req,res) => {
 const deleteProduct  = async (req,res) => {
     const deleteProduct = await productService.deleteProduct(req.query.id)
 }
-module.exports = { findById, find, save, deleteProduct };
+
+const uploadImage = async (req,res) => {
+    res.json({status:'success',data:req.file.name})
+}
+
+// const downloadImage = async (req,res) => {
+//     res.sendFile{}
+// }
+
+module.exports = { findById, find, save, deleteProduct, uploadImage };
