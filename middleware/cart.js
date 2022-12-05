@@ -7,7 +7,7 @@ class CartValidator{
     async cartValidator(req,res,next){
         const querySchema = joi.object({
             itemId:joi.string().required(),
-            qty:joi.number().required(),
+            qty:joi.number().required().min(1),
             userId:joi.string().required(),
         })
 

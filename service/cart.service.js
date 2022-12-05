@@ -5,6 +5,7 @@ async function saveItemToCart(req,res){
     console.log('Service Called');
     //return req.body;
     
+    //return await cartModel.findOneAndUpdate({req.body})
     let check = await cartModel.findOne({userId:req.body.userId,itemId:req.body.itemId});
     console.log("Check data : ",check);
     let updateStatus = '';
