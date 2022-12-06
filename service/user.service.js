@@ -1,14 +1,17 @@
 const customerModel = require('../models/customer.model')
 
+const { hashPassword , verifyPassword } = require('../authenticate');
+const { createToken } = require('../jwtToken');
+
 const signup = async (user) => {
-    console.log(user);
     let userData = {
         Name:user.name,
         City:"",
         Mobile:user.mobile,
         Email:user.email,
-        Password:user.password,
+        Password: await hashPassword(user.password),
     }
+    console.log(userData);
     let check = await customerModel.find({Email:{$exists:true}, Email:user.email});
     console.log("check : ",check);
     if( check != null && check.length ){
@@ -34,14 +37,23 @@ const signup = async (user) => {
 }
 
 const login = async (user) => {
+
     console.log("Payload : ",user);
-    let check = await customerModel.find({Email:{$exists:true}, Email:user.email, Password:user.password},{_id:1,Name:1,Email:1,Mobile:1});
+    let check = await customerModel.find({Email:{$exists:true}, Email:user.email},{_id:1,Name:1,Email:1,Mobile:1,Password:1});
     console.log("check : ",check);
     if( check != null && check.length == 0 ){
-        return {status:400,msg:"Invalid credentials"};
+        return {status:400,msg:"Email not found"};
     }else{
-        let result = {status:200,msg:"Logged successfully",data:{userId:check[0]._id,name:check[0].Name}};
-        return result;
+        let pstatus = await verifyPassword(check[0].Password,user.password);
+        //console.log(pstatus);
+        if( pstatus ){
+            let result = {userId:check[0]._id,name:check[0].Name};
+            let token = createToken(result);
+            return {status:200,msg:"Logged successfully",token:token};
+        }else{
+            return {status:400,msg:"Invalid password"};
+        }
+        
     }
 }
 

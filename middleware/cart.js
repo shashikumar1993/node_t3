@@ -1,6 +1,7 @@
 const joi = require('joi');
 const app = require('express')()
 const productModel = require('../models/product.model');
+const { verifyToken } = require('../jwtToken')
 
 class CartValidator{
 
@@ -8,7 +9,8 @@ class CartValidator{
         const querySchema = joi.object({
             itemId:joi.string().required(),
             qty:joi.number().required().min(1),
-            userId:joi.string().required(),
+            //userId:joi.string().required(),
+            token:joi.string().required(),
         })
 
         try {
@@ -61,6 +63,17 @@ class CartValidator{
           } catch (error) {
             console.log('Something went wrong!!!');
           }
+    }
+
+    async validateToken(req,res,next){
+      let tokenData = await verifyToken(req.body.token);
+      console.log("Token Data : ",tokenData);
+      if( tokenData == null ){
+        res.send({status:400,msg:'Invalid Token'});
+      }else{
+        req.body.userId = tokenData.userId;
+        next();
+      }
     }
 }
 

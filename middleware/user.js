@@ -1,6 +1,6 @@
 const { string, number } = require('joi');
 const joi = require('joi');
-
+const { verifyToken } = require('../jwtToken');
 class UserValidator{
 
     async validateSignup(req,res,next){
@@ -47,6 +47,13 @@ class UserValidator{
         }catch(error){
             console.log('Something went wrong!!!');
         }
+    }
+
+    async validateToken(req,res){
+        if( await verifyToken(req.body.token) ){
+            next();
+        }
+        return {status:400,msg:"Invalid Token"};
     }
 
 }
