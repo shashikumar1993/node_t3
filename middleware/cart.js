@@ -10,7 +10,7 @@ class CartValidator{
             itemId:joi.string().required(),
             qty:joi.number().required().min(1),
             //userId:joi.string().required(),
-            token:joi.string().required(),
+            //token:joi.string().required(),
         })
 
         try {
@@ -74,6 +74,33 @@ class CartValidator{
         req.body.userId = tokenData.userId;
         next();
       }
+    }
+
+    async validateBearerToken(req,res,next){
+      console.log(req.headers);
+      const authHeader = req.headers?.authorization;
+      if( authHeader?.startsWith('Bearer ')){
+        const token = authHeader.substring(7,authHeader.length);
+        let tokenData = await verifyToken(token);
+        console.log("Token Data : ",tokenData);
+        if( tokenData == null ){
+          res.send({status:400,msg:'Invalid Token'});
+        }else{
+          req.body.userId = tokenData.userId;
+          next();
+        }
+      }else{
+        res.send({status:400,msg:'Token is required'});
+      }
+
+      // let tokenData = await verifyToken(req.body.token);
+      // console.log("Token Data : ",tokenData);
+      // if( tokenData == null ){
+      //   res.send({status:400,msg:'Invalid Token'});
+      // }else{
+      //   req.body.userId = tokenData.userId;
+      //   next();
+      // }
     }
 }
 
