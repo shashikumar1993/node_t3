@@ -13,7 +13,11 @@ module.exports = mongoose.model('Order',new mongoose.Schema({
             price:Number,    
         }
     ],
-    total:Number
+    total:Number,
+    paymentPayload:String,
+    paymentStatus:String,
+    paymentResponse:String,
+    paymentId:String,
 },{
     timestamps:true
 }));

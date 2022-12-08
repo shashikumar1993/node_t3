@@ -85,6 +85,10 @@ app.get('/downloadImage',async (req,res) => {
     res.sendFile(req.query.filename,{root:'uploads/'});
 })
 
-app.use(express.json());
+var bodyParser = require('body-parser'); 
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+
+//app.use(express.json());
 app.use(require('./routes/index'))
 require('./connection');
