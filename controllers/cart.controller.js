@@ -1,5 +1,5 @@
 const cart = require('../middleware/cart');
-const { saveItemToCart, processOrder, processPayment, verifyPayment } = require('../service/cart.service');
+const { saveItemToCart, processOrder, processPayment, verifyPayment , getInvoice , getOrdersList } = require('../service/cart.service');
 class Cart{
 
     async saveToCart(req,res){
@@ -44,6 +44,33 @@ class Cart{
         }else{
             res.json({status:200,msg:"Faled to save order"});
         }
+    }
+
+    async getOrderInvoice(req,res){
+        const orderData = await getInvoice(req.query.orderId);
+        res.setHeader("Content-Type", "application/pdf");// By Default Content Type is application/octet-stream and that is getting downloaded so we need to change it
+        res.send(orderData);
+
+        // if( cartStatus ){
+        //     res.json({status:200,msg:"Order payment successfull"});
+        // }else{
+        //     res.json({status:200,msg:"Faled to save order"});
+        // }
+    }
+
+    async orderList(req,res){
+        const orderData = await getOrdersList(req.query.orderId);
+        //res.setHeader("Content-Disposition", `attachment;filename="Invoice-''.xlsx`);// By Default Content Type is application/octet-stream and that is getting downloaded so we need to change it
+
+        //res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        res.setHeader("Content-Disposition", "attachment; filename=" + "Report.xlsx");
+
+        res.sendFile(orderData);
+        // if( orderData != '' ){
+        //     res.json({status:200,msg:"Excel generated successfully"});
+        // }else{
+        //     res.json({status:200,msg:"Faled to generate"});
+        // }
     }
 }
 

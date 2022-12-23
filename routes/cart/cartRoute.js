@@ -20,4 +20,8 @@ app.post('/cancelPayment',async(req,res) => {
     res.json(req.body);
 })
 
+app.get('/viewInvoice',cart.getOrderInvoice);
+
+app.get('/viewInvoiceXlsx',cart.orderList);
+
 module.exports = app;

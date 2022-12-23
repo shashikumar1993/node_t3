@@ -125,4 +125,85 @@ async function verifyPayment(params){
     return false;
 }
 
-module.exports = { saveItemToCart, processOrder, processPayment, verifyPayment };
+async function getInvoice(orderId = ''){
+    const orderData = await orderModel.findById(orderId,{});
+    if( orderData ){
+
+        const {jsPDF} = require("jspdf");
+        const autotable = require("jspdf-autotable").default;
+
+        const doc = new jsPDF();
+        doc.setFontSize(24);
+
+        doc.text("Invoice", 15, 20);
+
+        doc.setFontSize(18);
+
+        doc.text("Order Id : " + orderData._id, 15, 30);
+
+        doc.setFontSize(16);
+
+        doc.text("Order Amount : " + parseFloat(orderData.total).toFixed(2), 15, 40);
+
+        doc.setFontSize(14);
+
+        doc.text("Order Status : " + orderData.paymentStatus, 15, 50);
+
+        autotable(doc, {
+
+            startY:60,
+        
+            head:[["Product", "Quantity", "Rate", "Amount"]],
+        
+            body: orderData.items.map((item) => [
+        
+                item.name,
+        
+                item.qty,
+        
+                parseFloat(item.price).toFixed(2),
+        
+                parseFloat(item.total).toFixed(2),
+        
+              ]),
+        
+          });
+
+          return Buffer.from(doc.output("arraybuffer"));
+    }
+
+    return false;
+}
+
+async function getOrdersList(orderId = ''){
+    const orderData = await orderModel.findById(orderId,{});
+    if( orderData ){
+        //const XLSX = require('xlsx');
+        const XLSX = require('xlsx-js-style');
+
+        const header = ["Product","Quantity","Rate","Amount"];
+
+        const rows = orderData.items.map( (order) => [
+            order.name,
+            order.qty,
+            parseFloat(order.price).toFixed(2),
+            parseFloat(order.total).toFixed(2),
+        ] )
+
+        const data = [header, ...rows];
+
+        const workSheet = XLSX.utils.aoa_to_sheet(data);
+
+        const workBook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workBook,workSheet,"Sheet 1");
+
+        let filename = "sample.xlsx";
+        XLSX.writeFile(workBook,"./uploads/"+filename);
+        return "/uploads/"+filename;
+    }
+
+    return false;
+}
+
+
+module.exports = { saveItemToCart, processOrder, processPayment, verifyPayment , getInvoice, getOrdersList };
